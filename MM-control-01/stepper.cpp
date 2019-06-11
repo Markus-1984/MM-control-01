@@ -84,7 +84,7 @@ bool home_idler()
 	for (int c = 1; c > 0; c--)  // not really functional, let's do it rather more times to be sure
 	{
 		delay(50);
-		move_with_stallguard(2000, 0,0,0);
+		move_with_stallguard(2000, 0,0,1);
     //move(200, 0, 0); // move a bit in direction
 
 	}
@@ -110,7 +110,7 @@ bool home_selector()
 
 	int _c = 0;
   shr16_set_led(2 << 2 * 2);
-	for (int c = 5; c > 0; c--)   // not really functional, let's do it rather more times to be sure
+	for (int c = 1; c > 0; c--)   // not really functional, let's do it rather more times to be sure
 	{
 		move(0, c * -18, 0);
 		delay(50);
@@ -235,9 +235,9 @@ void move_with_stallguard(int _idler, int _selector, int _pulley, int _sg)
     if (_selector > 0) { selector_step_pin_reset(); _selector--; delayMicroseconds(800); }
     if (_pulley > 0) { pulley_step_pin_reset(); _pulley--;  delayMicroseconds(700); }
     asm("nop");
-    if (_idler > 0 && _acc <34) {sg_idler= tmc2130_read_sg(AX_IDL);}
-    if (_selector > 0 && _acc <34) {sg_selector= tmc2130_read_sg(AX_SEL);}
-    if (_pulley > 0 && _acc <34) {sg_pulley= tmc2130_read_sg(AX_PUL);}
+    if (_idler > 0 && _acc <2) {sg_idler= tmc2130_read_sg(AX_IDL);}
+    if (_selector > 0 && _acc <2) {sg_selector= tmc2130_read_sg(AX_SEL);}
+    if (_pulley > 0 && _acc <2) {sg_pulley= tmc2130_read_sg(AX_PUL);}
     if((sg_selector <= _sg || sg_idler <= _sg || sg_pulley <= _sg) && _sg > 0){break;}
     if (_acc > 0) { delayMicroseconds(_acc*10); _acc--; }; // super pseudo acceleration control
 
