@@ -110,7 +110,7 @@ bool home_selector()
 
 	int _c = 0;
   shr16_set_led(2 << 2 * 2);
-	for (int c = 5; c > 0; c--)   // not really functional, let's do it rather more times to be sure
+	for (int c = 1; c > 0; c--)   // not really functional, let's do it rather more times to be sure
 	{
 		move(0, c * -18, 0);
 		delay(50);
@@ -218,8 +218,15 @@ void move_with_stallguard(int _idler, int _selector, int _pulley, int _sg)
   uint16_t sg_selector=1023;
   uint16_t sg_idler=1023;
   uint16_t sg_pulley=1023;
+  bool _idler_direction=0;
+  bool hit_endstop=0;
+  int extra_steps=48;
+  pinMode(7, INPUT);           // set pin to input
+  digitalWrite(7, HIGH);       // turn on pullup resistorsuint8_t testp;
+
 
   // gets steps to be done and set direction
+  if (_idler < 0 ) {_idler_direction = 1; }
   _idler = set_idler_direction(_idler); 
   _selector = set_selector_direction(_selector);
   _pulley = set_pulley_direction(_pulley);
@@ -235,10 +242,12 @@ void move_with_stallguard(int _idler, int _selector, int _pulley, int _sg)
     if (_selector > 0) { selector_step_pin_reset(); _selector--; delayMicroseconds(800); }
     if (_pulley > 0) { pulley_step_pin_reset(); _pulley--;  delayMicroseconds(700); }
     asm("nop");
-    if (_idler > 0 && _acc <34) {sg_idler= tmc2130_read_sg(AX_IDL);}
-    if (_selector > 0 && _acc <34) {sg_selector= tmc2130_read_sg(AX_SEL);}
-    if (_pulley > 0 && _acc <34) {sg_pulley= tmc2130_read_sg(AX_PUL);}
+    if (_idler > 0 && _acc <2) {sg_idler= tmc2130_read_sg(AX_IDL);}
+    if (_selector > 0 && _acc <2) {sg_selector= tmc2130_read_sg(AX_SEL);}
+    if (_pulley > 0 && _acc <2) {sg_pulley= tmc2130_read_sg(AX_PUL);}
     if((sg_selector <= _sg || sg_idler <= _sg || sg_pulley <= _sg) && _sg > 0){break;}
+    if ((!_idler_direction) && (digitalRead(7) == 1)){ hit_endstop = 1; extra_steps--;}
+    if ((!_idler_direction) && hit_endstop && extra_steps <= 0){ break;}
     if (_acc > 0) { delayMicroseconds(_acc*10); _acc--; }; // super pseudo acceleration control
 
   } while (_selector != 0 || _idler != 0 || _pulley != 0);
