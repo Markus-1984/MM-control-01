@@ -287,7 +287,7 @@ void setup()
         state = S::Setup;
     }
 
-    tmc2130_init(HOMING_MODE);
+    tmc2130_init(tmc2130_mode);
     tmc2130_read_gstat(); //consume reset after power up
     uint8_t filament;
     if(FilamentLoaded::get(filament))
