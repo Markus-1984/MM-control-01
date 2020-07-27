@@ -75,11 +75,11 @@
 #define AX_IDL 2
 
     
-#define CURRENT_HOLDING_STEALTH {1, 7, 22}  // {60,240,690 mA}
-#define CURRENT_HOLDING_NORMAL {1, 10, 22}  // {17,330,690 mA}
+#define CURRENT_HOLDING_STEALTH {1, 7, 22}  // {33,133,381 mA}
+#define CURRENT_HOLDING_NORMAL {1, 10, 22}  // {33,182,381 mA}
 #define CURRENT_RUNNING_STEALTH {35, 35, 45} // {540,540,690 mA}
 #define CURRENT_RUNNING_NORMAL {30, 35, 47} // {513,540,720 mA}
-#define CURRENT_HOMING {1, 35, 35} //
+#define CURRENT_HOMING {1, 35, 30} // {33,540,513 mA}
 
 //mode
 #define HOMING_MODE 0
